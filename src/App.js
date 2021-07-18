@@ -43,7 +43,7 @@ function App() {
 			<h1>Todo App</h1>
 			<form>
 				<FormControl>
-					<InputLabel>✅ Add a todo</InputLabel>
+					<InputLabel>☑️ Add a todo</InputLabel>
 					<Input
 						type="text"
 						value={input}

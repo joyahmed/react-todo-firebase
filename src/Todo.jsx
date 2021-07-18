@@ -7,7 +7,8 @@ import {
 	ListItem,
 	ListItemAvatar,
 	ListItemText,
-	Button
+	Button,
+	Divider
 } from '@material-ui/core';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -15,12 +16,32 @@ import { makeStyles } from '@material-ui/core/styles';
 
 import db from './firebase';
 
+const getModalStyle = () => {
+	const top = 30;
+	const left = 45;
+	//const display = 'flex';
+	const alignItems = 'center';
+	const justifyContent = 'center';
+	const textAlign = 'center';
+
+	return {
+		//display: display,
+		textAlign: textAlign,
+		alignItems: alignItems,
+		justifyContent: justifyContent,
+		top: `${top}%`,
+		margin: 'auto',
+		left: `${left}%`,
+		transform: `translate(-${top}%, -${left}%)`
+	};
+};
+
 const useStyles = makeStyles(theme => ({
-	modal: {
+	/* 	modal: {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'center'
-	},
+	}, */
 	paper: {
 		position: 'absolute',
 		width: 400,
@@ -51,46 +72,66 @@ const Todo = props => {
 		setOpen(false);
 	};
 	return (
-		<Grid container justifyContent="center">
-			<Modal
-				classsName={classes.modal}
-				open={open}
-				onClose={e => setOpen(false)}
-				closeAfterTransition
-				BackdropComponent={Backdrop}
-				BackdropProps={{
-					timeout: 500
-				}}
-			>
-				<div className={classes.paper}>
-					<h1>I am a modal</h1>
-					<input
-						placeholder={props.todo.todo}
-						value={input}
-						onChange={e => setInput(e.target.value)}
-					/>
-					<Button onClick={updateTodo}>Update Todo</Button>
-				</div>
-			</Modal>
-			<Grid item xs={7}>
-				<List>
-					<ListItem>
-						<ListItemAvatar>
-							<Avatar></Avatar>
-						</ListItemAvatar>
-						<ListItemText
-							primary={props.todo.todo}
-							secondary="Dummy deadline ⏰"
-						/>
-						<Button onClick={e => setOpen(true)}>Edit</Button>
-						<DeleteForeverIcon
-							color="danger"
-							onClick={e => db.collection('todos').doc(props.todo.id).delete()}
-						/>
-					</ListItem>
-				</List>
+		<>
+			<div>
+				<Modal
+					aria-labelledby="transition-modal-title"
+					aria-describedby="transition-modal-description"
+					open={open}
+					onClose={e => setOpen(false)}
+					closeAfterTransition
+					BackdropComponent={Backdrop}
+					BackdropProps={{
+						timeout: 500
+					}}
+					style={{
+						display: 'flex',
+						alignItems: 'center',
+						justifyContent: 'center'
+					}}
+				>
+					<div style={getModalStyle()} className={classes.paper}>
+						{/* <Grid container alignItems="center" className={classes.root}> */}
+						<div>
+							<h1>📝Edit Todo</h1>
+						</div>
+						<div>
+							<input
+								placeholder={props.todo.todo}
+								value={input}
+								onChange={e => setInput(e.target.value)}
+							/>
+						</div>
+						<Button disabled={!input} onClick={updateTodo}>
+							☑️Update Todo
+						</Button>
+						{/* </Grid> */}
+					</div>
+				</Modal>
+			</div>
+			<Grid container justifyContent="center">
+				<Grid item xs={7}>
+					<List>
+						<ListItem>
+							<ListItemAvatar>
+								<Avatar></Avatar>
+							</ListItemAvatar>
+							<ListItemText
+								primary={props.todo.todo}
+								secondary="Dummy deadline ⏰"
+							/>
+							<Button onClick={e => setOpen(true)}>Edit</Button>
+							<DeleteForeverIcon
+								color="danger"
+								onClick={e =>
+									db.collection('todos').doc(props.todo.id).delete()
+								}
+							/>
+						</ListItem>
+					</List>
+				</Grid>
 			</Grid>
-		</Grid>
+		</>
 	);
 };
 
